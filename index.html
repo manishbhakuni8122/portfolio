@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Manish Singh Bhakuni — Data Analyst</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- Lottie Player -->
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+<style>
+:root{--bg:#020209;--s1:#0d0d24;--s2:#111128;--b1:rgba(120,100,255,0.13);--b2:rgba(120,100,255,0.28);--ac:#7c6fff;--ac2:#a78bfa;--ac3:#06d6a0;--gold:#f4c542;--tx:#e8e6f0;--tx2:#9491b0;--tx3:#5a5780;--fd:'Syne',sans-serif;--fb:'DM Sans',sans-serif;--fm:'JetBrains Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{background:var(--bg);color:var(--tx);font-family:var(--fb);overflow-x:hidden;cursor:none}
+#cur{position:fixed;top:0;left:0;width:14px;height:14px;background:var(--ac);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width .2s,height .2s,background .2s;mix-blend-mode:difference}
+#cur-ring{position:fixed;top:0;left:0;width:44px;height:44px;border:2px solid rgba(124,111,255,.7);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:width .3s,height .3s,opacity .3s}
+body.hovering #cur{width:20px;height:20px;background:var(--ac2)}body.hovering #cur-ring{width:60px;height:60px;opacity:.4}
+#bg-canvas{position:fixed;inset:0;z-index:1;pointer-events:none}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--ac);border-radius:4px}
+
+/* ── HERO VIDEO BG ── */
+.hero-video-wrap{position:absolute;inset:0;z-index:0;overflow:hidden}
+.hero-video-wrap video{width:100%;height:100%;object-fit:cover;opacity:.12;filter:hue-rotate(220deg) saturate(1.6)}
+.hero-video-wrap::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 18% 50%,rgba(124,111,255,.18),transparent 60%),linear-gradient(to right,rgba(2,2,9,.85) 40%,rgba(2,2,9,.3) 100%)}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:18px 52px;display:flex;justify-content:space-between;align-items:center;transition:all .4s;border-bottom:1px solid transparent}
+nav.solid{background:rgba(2,2,9,.92);backdrop-filter:blur(28px);border-bottom-color:var(--b1)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--fd);font-size:17px;font-weight:800;color:#fff}
+.logo-box{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;font-weight:900}
+.nav-r{display:flex;gap:28px;align-items:center}
+.nav-r a{color:var(--tx3);text-decoration:none;font-size:12px;font-family:var(--fm);font-weight:500;letter-spacing:.5px;transition:color .2s}
+.nav-r a:hover{color:var(--ac2)}
+.hire{padding:9px 22px;border-radius:9px;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff !important;font-weight:700;font-size:12px;box-shadow:0 4px 20px rgba(124,111,255,.35);transition:all .3s}
+.hire:hover{transform:translateY(-2px)!important;box-shadow:0 8px 32px rgba(124,111,255,.55)!important}
+
+#hero{position:relative;z-index:2;min-height:100vh;display:flex;align-items:center;padding:110px 52px 80px;overflow:hidden}
+.hero-glow{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 18% 50%,rgba(124,111,255,.1),transparent 65%),radial-gradient(ellipse 55% 70% at 82% 30%,rgba(6,214,160,.06),transparent 60%);z-index:1;pointer-events:none}
+.hero-dots{position:absolute;inset:0;background-image:radial-gradient(rgba(124,111,255,.08) 1px,transparent 1px);background-size:44px 44px;z-index:1;pointer-events:none}
+.hero-wrap{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center;max-width:1200px;width:100%;margin:0 auto;position:relative;z-index:2}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:5px 15px;border-radius:100px;border:1px solid var(--b2);background:rgba(124,111,255,.07);font-size:11px;font-weight:600;color:var(--ac2);letter-spacing:1px;text-transform:uppercase;margin-bottom:26px;font-family:var(--fm)}
+.bdot{width:6px;height:6px;border-radius:50%;background:var(--ac3);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:.5}}
+h1.name{font-family:var(--fd);font-size:clamp(40px,5.5vw,72px);font-weight:800;line-height:.98;letter-spacing:-2.5px;color:#fff;margin-bottom:8px}
+.grad{background:linear-gradient(100deg,var(--ac),var(--ac2),var(--ac3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-size:200%;animation:sh 4s linear infinite}
+@keyframes sh{0%{background-position:0%}100%{background-position:200%}}
+.role{font-family:var(--fm);font-size:11px;color:var(--ac3);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:20px}
+.desc{font-size:15px;color:var(--tx2);line-height:1.85;max-width:470px;margin-bottom:34px;font-weight:300}.desc strong{color:var(--tx);font-weight:500}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:46px}
+.btn1{padding:13px 28px;border-radius:12px;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;font-weight:700;font-size:14px;text-decoration:none;transition:all .3s;box-shadow:0 4px 28px rgba(124,111,255,.4)}.btn1:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(124,111,255,.55)}
+.btn2{padding:13px 28px;border-radius:12px;background:transparent;color:var(--tx2);font-weight:600;font-size:14px;text-decoration:none;border:1px solid var(--b2);transition:all .3s}.btn2:hover{border-color:var(--ac);color:var(--ac2);background:rgba(124,111,255,.06)}
+.hstats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--b1);border:1px solid var(--b1);border-radius:16px;overflow:hidden}
+.hs{background:var(--s1);padding:18px;text-align:center}.hs-v{font-family:var(--fd);font-size:25px;font-weight:800;color:var(--ac2)}.hs-l{font-size:9px;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-top:3px;font-family:var(--fm)}
+.hero-r{position:relative;display:flex;justify-content:center;align-items:center}.h3d{width:430px;height:470px;position:relative}
+.fc{position:absolute;background:var(--s1);border:1px solid var(--b2);border-radius:20px;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.55)}
+.mc{width:300px;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;animation:flt 6s ease-in-out infinite}
+@keyframes flt{0%,100%{transform:translate(-50%,-50%) translateY(0)}50%{transform:translate(-50%,-50%) translateY(-18px)}}
+.avr{width:108px;height:108px;border-radius:50%;margin:0 auto 13px;position:relative}
+.avr::before{content:'';position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(var(--ac),var(--ac3),var(--ac2),var(--ac));animation:sr 4s linear infinite}
+@keyframes sr{to{transform:rotate(360deg)}}
+.avi{position:absolute;inset:4px;border-radius:50%;background:linear-gradient(135deg,#1a1a3e,#0a0a1e);display:flex;align-items:center;justify-content:center;font-size:48px;z-index:1}
+.mc-n{font-family:var(--fd);font-size:16px;font-weight:800;color:#fff;margin-bottom:2px}.mc-t{font-size:10px;color:var(--ac2);font-family:var(--fm);letter-spacing:1px}
+.mc-tags{display:flex;gap:5px;justify-content:center;margin-top:11px;flex-wrap:wrap}.mct{padding:3px 8px;border-radius:20px;font-size:9px;font-weight:600;background:rgba(124,111,255,.1);color:var(--ac2);border:1px solid var(--b2)}
+.smc{padding:12px 15px;border-radius:13px;background:var(--s2);border:1px solid var(--b2)}
+.smc1{width:148px;top:3%;left:-7%;animation:sm1 5s ease-in-out infinite}.smc2{width:148px;bottom:5%;right:-5%;animation:sm2 7s ease-in-out infinite}.smc3{width:138px;top:62%;left:-11%;animation:sm3 6s ease-in-out infinite}
+@keyframes sm1{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(-1deg)}}
+@keyframes sm2{0%,100%{transform:translateY(0) rotate(4deg)}50%{transform:translateY(-14px) rotate(2deg)}}
+@keyframes sm3{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(1deg)}}
+.si{font-size:20px;margin-bottom:5px}.sv{font-family:var(--fd);font-size:20px;font-weight:800;color:var(--ac3)}.sl{font-size:9px;color:var(--tx3);font-family:var(--fm);text-transform:uppercase;letter-spacing:.5px}
+
+/* ── LOTTIE SECTION: ABOUT / STATS ── */
+#about-lottie{padding:70px 52px;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1.4fr;gap:60px;align-items:center;position:relative;z-index:2}
+.about-lottie-col{display:flex;flex-direction:column;align-items:center;gap:20px}
+.lottie-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;width:100%}
+.lottie-card{background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:20px 16px;text-align:center;transition:all .3s;overflow:hidden;position:relative}
+.lottie-card:hover{border-color:var(--b2);transform:translateY(-4px);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.lottie-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(124,111,255,.06),transparent 70%);pointer-events:none}
+.lottie-card lottie-player{width:80px;height:80px;margin:0 auto}
+.lc-title{font-family:var(--fd);font-size:13px;font-weight:800;color:#fff;margin-top:8px}
+.lc-sub{font-size:10px;color:var(--tx3);font-family:var(--fm);margin-top:2px}
+.about-text-col .stag{display:inline-block;font-family:var(--fm);font-size:10px;font-weight:700;color:var(--ac);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;padding:4px 14px;border:1px solid var(--b2);border-radius:100px}
+.about-text-col h2{font-family:var(--fd);font-size:clamp(28px,3.5vw,44px);font-weight:800;color:#fff;letter-spacing:-1.5px;line-height:1.05;margin-bottom:16px}
+.about-text-col p{font-size:14px;color:var(--tx2);line-height:1.85;margin-bottom:14px;font-weight:300}
+.about-text-col p strong{color:var(--tx);font-weight:500}
+.about-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.chip{padding:6px 14px;border-radius:100px;font-size:11px;font-weight:600;border:1px solid var(--b2);color:var(--ac2);background:rgba(124,111,255,.07);font-family:var(--fm)}
+
+section{position:relative;z-index:2}.sec-w{max-width:1200px;margin:0 auto;padding:0 52px}
+.sh{text-align:center;margin-bottom:56px}.stag{display:inline-block;font-family:var(--fm);font-size:10px;font-weight:700;color:var(--ac);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;padding:4px 14px;border:1px solid var(--b2);border-radius:100px}
+.stitle{font-family:var(--fd);font-size:clamp(28px,4vw,48px);font-weight:800;color:#fff;letter-spacing:-1.5px;line-height:1}.ssub{font-size:13px;color:var(--tx3);margin-top:10px}
+#stats{padding:0 52px;max-width:1200px;margin:0 auto 90px}
+.sstrip{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--b1);border:1px solid var(--b1);border-radius:20px;overflow:hidden}
+.sti{background:var(--s1);padding:28px 16px;text-align:center;transition:background .3s}.sti:hover{background:var(--s2)}
+.sti-n{font-family:var(--fd);font-size:32px;font-weight:800;line-height:1}.sti-d{font-size:9px;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;margin-top:5px;font-family:var(--fm)}
+
+/* ── DATA UNIVERSE 3D SECTION ── */
+#data-universe{padding:60px 52px 80px;max-width:1200px;margin:0 auto;position:relative;z-index:2}
+.du-header{text-align:center;margin-bottom:36px}
+.du-wrap{position:relative;width:100%;height:500px;border-radius:28px;overflow:hidden;border:1px solid var(--b2);background:#020209;box-shadow:0 0 80px rgba(124,111,255,.12)}
+#du-canvas{width:100%;height:100%;display:block;cursor:grab}
+#du-canvas:active{cursor:grabbing}
+.du-badge{position:absolute;top:18px;left:18px;display:flex;align-items:center;gap:7px;padding:6px 14px;border-radius:100px;background:rgba(2,2,9,.75);backdrop-filter:blur(14px);border:1px solid var(--b2);font-size:10px;font-weight:700;font-family:var(--fm);color:var(--ac2);z-index:10;pointer-events:none}
+.du-dot{width:6px;height:6px;border-radius:50%;background:var(--ac3);animation:pulse 2s infinite}
+.du-hint{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:10px;font-family:var(--fm);color:var(--tx3);pointer-events:none;opacity:.7}
+.du-stats{position:absolute;top:18px;right:18px;display:flex;flex-direction:column;gap:8px;z-index:10;pointer-events:none}
+.du-stat{background:rgba(2,2,9,.75);backdrop-filter:blur(14px);border:1px solid var(--b1);border-radius:10px;padding:8px 14px;text-align:right}
+.du-sv{font-family:var(--fd);font-size:15px;font-weight:800;color:var(--ac2)}
+.du-sl{font-size:9px;color:var(--tx3);font-family:var(--fm);text-transform:uppercase;letter-spacing:.5px}
+
+#projects{padding:80px 52px 100px;max-width:1240px;margin:0 auto}
+.tab-bar{display:flex;gap:8px;justify-content:center;margin-bottom:36px;flex-wrap:wrap}
+.tab-btn{padding:9px 22px;border-radius:30px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--b2);background:transparent;color:var(--tx3);font-family:var(--fm);transition:all .3s}
+.tab-btn.on,.tab-btn:hover{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;border-color:transparent;box-shadow:0 4px 20px rgba(124,111,255,.3)}
+.pw{display:none}.pw.on{display:block}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.pc{background:var(--s1);border:1px solid var(--b1);border-radius:20px;overflow:hidden;cursor:pointer;transition:all .4s cubic-bezier(.4,0,.2,1);position:relative}
+.pc:hover{transform:translateY(-8px);border-color:var(--b2);box-shadow:0 28px 70px rgba(0,0,0,.5)}
+.pc.feat{grid-column:span 2}
+.pc-img{width:100%;height:185px;overflow:hidden;position:relative}.pc-img img{width:100%;height:100%;object-fit:cover;filter:brightness(.6) saturate(.8);transition:all .5s}.pc:hover .pc-img img{filter:brightness(.45);transform:scale(1.06)}
+/* Lottie overlay on project cards */
+.pc-lottie-overlay{position:absolute;top:8px;right:8px;width:60px;height:60px;z-index:5;opacity:0;transition:opacity .3s;pointer-events:none}
+.pc:hover .pc-lottie-overlay{opacity:1}
+.pov{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 38%,var(--s1) 100%)}
+.ptop{position:absolute;top:0;left:0;right:0;height:3px}
+.pb{padding:20px}.phd{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}.pem{font-size:24px}
+.plive{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:9px;font-weight:700;font-family:var(--fm);background:rgba(6,214,160,.08);color:var(--ac3);border:1px solid rgba(6,214,160,.22);text-decoration:none;transition:all .2s}.plive:hover{background:rgba(6,214,160,.18)}
+.pld{width:5px;height:5px;border-radius:50%;background:var(--ac3);animation:pulse 2s infinite}
+.pbdg{padding:3px 9px;border-radius:20px;font-size:9px;font-weight:700;font-family:var(--fm)}
+.ptitle{font-family:var(--fd);font-size:18px;font-weight:800;color:#fff;margin-bottom:2px;letter-spacing:-.5px}
+.psub{font-size:11px;color:var(--tx3);margin-bottom:12px;font-family:var(--fm)}
+.ptags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}.ptg{padding:3px 8px;border-radius:20px;font-size:9px;font-weight:600;font-family:var(--fm)}
+.psr{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding-top:12px;border-top:1px solid var(--b1)}
+.ps{text-align:center}.psv{font-family:var(--fd);font-size:13px;font-weight:800}.psl{font-size:8px;color:var(--tx3);text-transform:uppercase;letter-spacing:.4px;font-family:var(--fm)}
+.pex{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1)}.pex.on{max-height:420px}
+.pxi{padding:0 20px 18px}.fl{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:12px}
+.fl li{display:flex;gap:8px;font-size:11px;color:var(--tx2);line-height:1.55}.fl li::before{content:'◆';font-size:6px;color:var(--ac);flex-shrink:0;margin-top:4px}
+.ibox{padding:11px 13px;border-radius:10px;font-size:11px;color:var(--tx2);line-height:1.6}.ilbl{font-size:9px;font-weight:800;font-family:var(--fm);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:3px}
+.ehint{padding:6px 20px 13px;text-align:center;font-size:9px;color:var(--tx3);font-family:var(--fm)}
+
+/* ── SKILL SECTION ── */
+#skills{padding:100px 0 60px;overflow:hidden}
+.sphere-wrap{position:relative;width:100%;height:500px;margin-bottom:16px}
+#sc{width:100%;height:100%;display:block;cursor:grab}#sc:active{cursor:grabbing}
+#tip{position:absolute;top:0;left:0;display:none;background:rgba(8,8,28,.95);border:1px solid var(--b2);border-radius:12px;padding:10px 16px;pointer-events:none;z-index:30;backdrop-filter:blur(14px);white-space:nowrap}
+#tip-n{font-family:var(--fd);font-size:14px;font-weight:800;color:#fff}#tip-l{font-size:10px;font-family:var(--fm);color:var(--ac2);margin-top:3px}
+.skills-inner{padding:0 52px;max-width:1100px;margin:0 auto}
+.sg-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.sg{background:var(--s1);border:1px solid var(--b1);border-radius:20px;padding:24px}
+.sg-t{font-family:var(--fd);font-size:12px;font-weight:800;color:var(--ac2);letter-spacing:1px;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:8px}.sg-t::after{content:'';flex:1;height:1px;background:var(--b1)}
+.skr{display:flex;align-items:center;gap:10px;margin-bottom:15px}.skr:last-child{margin-bottom:0}
+.sk-i{font-size:15px;width:20px;text-align:center}.sk-n{font-size:12px;font-weight:500;color:var(--tx);width:115px;flex-shrink:0}
+.sk-bg{flex:1;height:6px;border-radius:3px;background:rgba(124,111,255,.1);overflow:hidden}
+.sk-f{height:100%;border-radius:3px;width:0%;transition:width 1.6s cubic-bezier(.4,0,.2,1)}
+.sk-p{font-family:var(--fm);font-size:10px;color:var(--tx3);width:32px;text-align:right}
+
+/* ── LOTTIE TOOLS STRIP ── */
+#lottie-tools{padding:20px 52px 80px;max-width:1100px;margin:0 auto}
+.lt-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.lt-item{background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:16px 12px;text-align:center;transition:all .3s;cursor:pointer}
+.lt-item:hover{border-color:var(--b2);transform:translateY(-4px);background:var(--s2)}
+.lt-item lottie-player{width:52px;height:52px;margin:0 auto}
+.lt-name{font-size:10px;font-family:var(--fm);font-weight:700;color:var(--tx2);margin-top:8px;text-transform:uppercase;letter-spacing:.5px}
+.lt-level{font-size:9px;color:var(--tx3);margin-top:2px}
+
+#journey{padding:100px 52px;max-width:860px;margin:0 auto}
+.tl{position:relative;padding-left:54px}.tl::before{content:'';position:absolute;left:16px;top:10px;bottom:10px;width:2px;background:linear-gradient(to bottom,var(--ac),var(--ac2),var(--ac3),#22d3ee,var(--gold))}
+.tli{position:relative;margin-bottom:28px;opacity:0;transform:translateX(-20px);transition:all .6s}.tli.vis{opacity:1;transform:translateX(0)}
+.tld{position:absolute;left:-44px;top:16px;width:20px;height:20px;border-radius:50%;background:var(--bg);border:2px solid var(--ac);display:flex;align-items:center;justify-content:center;font-size:9px;box-shadow:0 0 18px rgba(124,111,255,.35)}
+.tlin{background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:16px 20px;transition:all .3s;position:relative;overflow:hidden}.tlin:hover{border-color:var(--b2);transform:translateX(4px)}
+.tlbar{position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
+.tly{font-family:var(--fm);font-size:10px;font-weight:700;color:var(--ac);letter-spacing:2px;margin-bottom:2px}
+.tlt{font-family:var(--fd);font-size:16px;font-weight:800;color:#fff;margin-bottom:1px}.tlp{font-size:12px;color:var(--ac2);font-weight:500;margin-bottom:2px}.tld2{font-size:11px;color:var(--tx3)}
+.tlbdg{display:inline-block;padding:2px 9px;border-radius:20px;font-size:9px;font-weight:700;font-family:var(--fm);position:absolute;top:16px;right:16px}
+
+#contact{padding:80px 52px 60px;max-width:820px;margin:0 auto}
+.cc{background:var(--s1);border:1px solid var(--b1);border-radius:26px;padding:56px;text-align:center;position:relative;overflow:hidden}
+.cc::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(124,111,255,.07),transparent 70%);pointer-events:none}
+.cc-lottie{width:120px;height:120px;margin:0 auto 10px}
+.cc-t{font-family:var(--fd);font-size:36px;font-weight:800;color:#fff;letter-spacing:-1.5px;margin-bottom:6px}.cc-s{font-size:13px;color:var(--tx3);margin-bottom:40px}
+.clinks{display:flex;flex-direction:column;gap:10px;align-items:center;margin-bottom:28px}
+.clink{display:flex;align-items:center;gap:10px;padding:14px 28px;border-radius:12px;background:var(--s2);border:1px solid var(--b1);color:var(--tx2);text-decoration:none;font-size:14px;font-weight:500;transition:all .3s;min-width:250px;justify-content:center}.clink:hover{border-color:var(--b2);color:var(--ac2);background:rgba(124,111,255,.07);transform:translateY(-2px)}
+.srow{display:flex;gap:10px;justify-content:center}
+.sb{padding:11px 24px;border-radius:11px;font-size:13px;font-weight:700;text-decoration:none;transition:all .3s;display:flex;align-items:center;gap:7px}.sb:hover{transform:translateY(-3px)}
+footer{text-align:center;padding:26px;font-family:var(--fm);font-size:10px;color:var(--tx3);letter-spacing:1px;border-top:1px solid var(--b1);position:relative;z-index:2}
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s,transform .7s}.rv.vis{opacity:1;transform:translateY(0)}
+.rl{opacity:0;transform:translateX(-26px);transition:opacity .7s,transform .7s}.rl.vis{opacity:1;transform:translateX(0)}
+.ci{color:#818cf8}.bgi{background:rgba(99,102,241,.12);border-color:rgba(99,102,241,.22)}
+.cb{color:#60a5fa}.bgb{background:rgba(96,165,250,.12);border-color:rgba(96,165,250,.22)}
+.cp{color:#c084fc}.bgp{background:rgba(192,132,252,.12);border-color:rgba(192,132,252,.22)}
+.cr{color:#f87171}.bgr{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.22)}
+.ca{color:#fbbf24}.bga{background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.22)}
+.cg{color:#4ade80}.bgg{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.22)}
+.ct{color:#22d3ee}.bgt{background:rgba(34,211,238,.12);border-color:rgba(34,211,238,.22)}
+
+/* Scroll progress bar */
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--ac),var(--ac3));z-index:99999;transition:width .1s;width:0%}
+
+@media(max-width:900px){.hero-wrap{grid-template-columns:1fr;text-align:center}.hero-r{display:none}.pgrid{grid-template-columns:1fr}.pc.feat{grid-column:span 1}.sg-grid{grid-template-columns:1fr}nav{padding:14px 20px}.nav-r{display:none}#hero,#projects,#skills,#journey,#contact,#spline-showcase,#about-lottie,#lottie-tools{padding-left:20px;padding-right:20px}#stats{padding:0 20px;margin-bottom:60px}.sstrip{grid-template-columns:repeat(3,1fr)}.cc{padding:36px 20px}#about-lottie{grid-template-columns:1fr}.lt-strip{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div id="cur"></div><div id="cur-ring"></div><canvas id="bg-canvas"></canvas>
+
+<nav id="nav">
+  <a href="#hero" class="logo"><span class="logo-box">M</span>Manish Bhakuni</a>
+  <div class="nav-r">
+    <a href="#hero" onclick="event.preventDefault();document.getElementById('hero').scrollIntoView({behavior:'smooth'})">Home</a>
+    <a href="#about-lottie" onclick="event.preventDefault();document.getElementById('about-lottie').scrollIntoView({behavior:'smooth'})">About</a>
+    <a href="#projects" onclick="event.preventDefault();document.getElementById('projects').scrollIntoView({behavior:'smooth'})">Projects</a>
+    <a href="#skills" onclick="event.preventDefault();document.getElementById('skills').scrollIntoView({behavior:'smooth'})">Skills</a>
+    <a href="#journey" onclick="event.preventDefault();document.getElementById('journey').scrollIntoView({behavior:'smooth'})">Journey</a>
+    <a href="#contact" onclick="event.preventDefault();document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Contact</a>
+    <a href="mailto:mbhakuni678@gmail.com" class="hire" onclick="window.location.href='mailto:mbhakuni678@gmail.com'">Hire Me →</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     HERO — with video background fallback
+═══════════════════════════════════════════ -->
+<section id="hero">
+  <!-- Video background — uses a free CDN-hosted data animation -->
+  <div class="hero-video-wrap">
+    <!-- Primary: abstract tech video from a public CDN -->
+    <video autoplay loop muted playsinline id="hero-vid"
+      poster="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1400&q=70">
+      <!-- Free abstract data video — Pexels embed approach -->
+      <source src="https://www.pexels.com/video/854100/download/?search_query=&tracking_id=0o9jnvl3f17" type="video/mp4"/>
+    </video>
+  </div>
+  <div class="hero-glow"></div><div class="hero-dots"></div>
+  <div class="hero-wrap">
+    <div>
+      <div class="badge"><span class="bdot"></span>Available for opportunities</div>
+      <h1 class="name">Manish Singh<br><span class="grad">Bhakuni</span></h1>
+      <div class="role">Business Ops → Data Analyst</div>
+      <p class="desc">I don't just analyze data — I <strong>build full-stack production systems</strong> that automate operations at scale. From identifying a manual bottleneck to shipping a live tool used by <strong>80+ stores across India &amp; UAE</strong> — I've built <strong>6 systems tracking ₹10L+/month</strong> in electricity, procurement, compliance, CCTV, WiFi, and HR operations. MCA postgraduate skilled in <strong>Python, SQL, JavaScript, Supabase, Power BI</strong>, and <strong>prompt engineering</strong> — turning business chaos into clean dashboards.</p>
+      <div class="btns"><a href="#projects" class="btn1" onclick="event.preventDefault();document.getElementById('projects').scrollIntoView({behavior:'smooth'})">View My Work →</a><a href="mailto:mbhakuni678@gmail.com" class="btn2" onclick="window.location.href='mailto:mbhakuni678@gmail.com'">Let's Talk ✉️</a></div>
+      <div class="hstats">
+        <div class="hs"><div class="hs-v"><span class="cnt" data-n="10">0</span>+</div><div class="hs-l">Total Projects</div></div>
+        <div class="hs"><div class="hs-v"><span class="cnt" data-n="80">0</span>+</div><div class="hs-l">Stores Managed</div></div>
+        <div class="hs"><div class="hs-v">₹<span class="cnt" data-n="10">0</span>L+</div><div class="hs-l">Tracked/month</div></div>
+      </div>
+    </div>
+    <div class="hero-r"><div class="h3d">
+      <div class="fc smc smc1"><div class="si">📦</div><div class="sv">₹3.16L</div><div class="sl">Order Value</div></div>
+      <div class="fc smc smc2"><div class="si">⚡</div><div class="sv">87</div><div class="sl">Stores Live</div></div>
+      <div class="fc smc smc3"><div class="si">🤖</div><div class="sv">95%</div><div class="sl">Time Saved</div></div>
+      <div class="fc mc"><div class="avr"><div class="avi">👨‍💻</div></div><div class="mc-n">Manish S. Bhakuni</div><div class="mc-t">Business Ops Analyst</div><div class="mc-tags"><span class="mct">Python</span><span class="mct">SQL</span><span class="mct">Supabase</span><span class="mct">Power BI</span></div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     STATS BAR
+═══════════════════════════════════════════ -->
+<div id="stats" class="rv"><div class="sstrip">
+  <div class="sti"><div class="sti-n ci"><span class="cnt" data-n="6">0</span></div><div class="sti-d">Live Systems Built</div></div>
+  <div class="sti"><div class="sti-n cb"><span class="cnt" data-n="80">0</span>+</div><div class="sti-d">Stores Managed</div></div>
+  <div class="sti"><div class="sti-n cg">₹<span class="cnt" data-n="10">0</span>L+</div><div class="sti-d">Revenue/month</div></div>
+  <div class="sti"><div class="sti-n cp"><span class="cnt" data-n="2">0</span></div><div class="sti-d">Countries</div></div>
+  <div class="sti"><div class="sti-n ca"><span class="cnt" data-n="95">0</span>%</div><div class="sti-d">Time Saved</div></div>
+</div></div>
+
+<!-- ══════════════════════════════════════════
+     ABOUT + LOTTIE ANIMATIONS
+═══════════════════════════════════════════ -->
+<div id="about-lottie">
+  <!-- Left: Lottie animation cards -->
+  <div class="about-lottie-col rv">
+    <div class="lottie-grid">
+      <div class="lottie-card">
+        <!-- Data Analytics Lottie -->
+        <lottie-player
+          src="https://assets9.lottiefiles.com/packages/lf20_qp1q7mct.json"
+          background="transparent" speed="1" loop autoplay
+          style="width:80px;height:80px;margin:0 auto">
+        </lottie-player>
+        <div class="lc-title">Data Analytics</div>
+        <div class="lc-sub">Python · SQL · Power BI</div>
+      </div>
+      <div class="lottie-card">
+        <!-- Dashboard / Chart Lottie -->
+        <lottie-player
+          src="https://assets3.lottiefiles.com/packages/lf20_vnikecqo.json"
+          background="transparent" speed="1" loop autoplay
+          style="width:80px;height:80px;margin:0 auto">
+        </lottie-player>
+        <div class="lc-title">Live Dashboards</div>
+        <div class="lc-sub">6 Production Systems</div>
+      </div>
+      <div class="lottie-card">
+        <!-- Automation / Robot Lottie -->
+        <lottie-player
+          src="https://assets5.lottiefiles.com/packages/lf20_fcfjwiyb.json"
+          background="transparent" speed="1" loop autoplay
+          style="width:80px;height:80px;margin:0 auto">
+        </lottie-player>
+        <div class="lc-title">Automation</div>
+        <div class="lc-sub">95% Time Saved</div>
+      </div>
+      <div class="lottie-card">
+        <!-- Global / India-UAE Lottie -->
+        <lottie-player
+          src="https://assets2.lottiefiles.com/packages/lf20_khzniaya.json"
+          background="transparent" speed="1" loop autoplay
+          style="width:80px;height:80px;margin:0 auto">
+        </lottie-player>
+        <div class="lc-title">Cross-Border Ops</div>
+        <div class="lc-sub">India + UAE</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: About text -->
+  <div class="about-text-col rl">
+    <div class="stag">About Me</div>
+    <h2 class="stitle">Turning chaos into <span class="grad">clarity</span></h2>
+    <p>I'm an <strong>MCA postgraduate</strong> with a rare combo — the analytical mindset of a data professional and the execution speed of a developer. I don't wait for a team to build tools; I build them myself.</p>
+    <p>At Zippee, I independently designed and shipped <strong>6 production systems</strong> from scratch — each one replacing a manual, error-prone process with a real-time, automated, Supabase-backed web app used daily across <strong>80+ dark stores in India and UAE</strong>.</p>
+    <p>I specialize in the full arc: <strong>identify bottleneck → design data model → build UI → deploy live → measure impact.</strong> My tools track ₹10L+/month, manage 170+ WiFi connections, monitor CCTV at 80+ locations, and automate HR letters in under 1 minute.</p>
+    <div class="about-chips">
+      <span class="chip">Python</span><span class="chip">SQL</span><span class="chip">JavaScript</span>
+      <span class="chip">Supabase</span><span class="chip">Power BI</span><span class="chip">Prompt Engineering</span>
+      <span class="chip">Process Automation</span><span class="chip">Dashboard Design</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     DATA UNIVERSE — Custom Three.js 3D Scene
+═══════════════════════════════════════════ -->
+<section id="data-universe">
+  <div class="du-header rv">
+    <div class="stag">Interactive 3D</div>
+    <h2 class="stitle">Data Universe</h2>
+    <p class="ssub">🖱️ Drag to rotate · Scroll to zoom · Hover nodes to reveal data</p>
+  </div>
+  <div class="du-wrap rv">
+    <canvas id="du-canvas"></canvas>
+    <div class="du-badge"><span class="du-dot"></span>Live Interactive · Built with Three.js</div>
+    <div class="du-stats">
+      <div class="du-stat"><div class="du-sv">87</div><div class="du-sl">Stores Live</div></div>
+      <div class="du-stat"><div class="du-sv">₹10L+</div><div class="du-sl">/ Month</div></div>
+      <div class="du-stat"><div class="du-sv">6</div><div class="du-sl">Systems</div></div>
+    </div>
+    <div class="du-hint">🖱️ drag · scroll to zoom · hover nodes</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     PROJECTS
+═══════════════════════════════════════════ -->
+<section id="projects">
+  <div class="sh rv"><div class="stag">Portfolio</div><h2 class="stitle">All Projects</h2><p class="ssub">Live production tools + college projects — click to expand</p></div>
+  <div class="tab-bar"><button class="tab-btn on" onclick="switchTab('work',this)">💼 Work Projects (Live)</button><button class="tab-btn" onclick="switchTab('col',this)">🎓 College Projects</button></div>
+
+  <div class="pw on" id="tab-work"><div class="pgrid">
+
+    <div class="pc feat rv" onclick="toggleP(this)">
+      <div class="ptop" style="background:linear-gradient(90deg,#6366f1,#8b5cf6)"></div>
+      <div class="pc-img">
+        <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80" alt="" loading="lazy"/>
+        <div class="pov"></div>
+        <!-- Lottie hover overlay -->
+        <div class="pc-lottie-overlay">
+          <lottie-player src="https://assets6.lottiefiles.com/packages/lf20_wd1udlcz.json" background="transparent" speed="1" loop autoplay style="width:60px;height:60px"></lottie-player>
+        </div>
+      </div>
+      <div class="pb"><div class="phd"><span class="pem">📦</span><a href="https://procurementflow-9eq.pages.dev/" target="_blank" class="plive" onclick="event.stopPropagation()"><span class="pld"></span>LIVE</a></div><div class="ptitle">ProcureFlow</div><div class="psub">Dark Store Procurement System</div><div class="ptags"><span class="ptg bgi ci">JavaScript</span><span class="ptg bgi ci">Supabase</span><span class="ptg bgi ci">Chart.js</span><span class="ptg bgi ci">Cloudinary</span></div><div class="psr"><div class="ps"><div class="psv ci">₹3.16L+</div><div class="psl">Order Value</div></div><div class="ps"><div class="psv ci">40+</div><div class="psl">Stores</div></div><div class="ps"><div class="psv ci">8</div><div class="psl">Modules</div></div><div class="ps"><div class="psv ci">v2.5</div><div class="psl">Version</div></div></div></div><div class="pex"><div class="pxi"><ul class="fl"><li>Multi-module SPA — Dashboard, Orders, Inventory, Finance, Config</li><li>4 live KPI cards with real-time Supabase sync</li><li>DT Roll stock tracker with AI-calculated reorder dates</li><li>Chart.js analytics — Monthly Spend &amp; Items Distribution</li><li>Cloudinary image upload for bills &amp; proofs + GSheet Sync</li></ul><div class="ibox" style="background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.18)"><span class="ilbl" style="color:#818cf8">💥 Impact</span>Streamlined procurement across 40+ locations with real-time ₹1.58L payment tracking</div></div></div><div class="ehint">↓ expand details</div>
+    </div>
+
+    <div class="pc rv" onclick="toggleP(this)">
+      <div class="ptop" style="background:linear-gradient(90deg,#1e40af,#06b6d4)"></div>
+      <div class="pc-img">
+        <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=600&q=80" alt="" loading="lazy"/>
+        <div class="pov"></div>
+        <div class="pc-lottie-overlay">
+          <lottie-player src="https://assets6.lottiefiles.com/packages/lf20_qp1q7mct.json" background="transparent" speed="1" loop autoplay style="width:60px;height:60px"></lottie-player>
+        </div>
+      </div>
+      <div class="pb"><div class="phd"><span class="pem">⚡</span><a href="https://electricity.bizops-163.workers.dev/" target="_blank" class="plive" onclick="event.stopPropagation()"><span class="pld"></span>LIVE</a></div><div class="ptitle">Electricity Dashboard</div><div class="psub">Pan-India Bill Management</div><div class="ptags"><span class="ptg bgb cb">JavaScript</span><span class="ptg bgb cb">Supabase</span><span class="ptg bgb cb">XLSX.js</span></div><div class="psr"><div class="ps"><div class="psv cb">87</div><div class="psl">Stores</div></div><div class="ps"><div class="psv cb">17</div><div class="psl">Companies</div></div><div class="ps"><div class="psv cb">₹10L+</div><div class="psl">Monthly</div></div><div class="ps"><div class="psv cb">6+</div><div class="psl">Months</div></div></div></div><div class="pex"><div class="pxi"><ul class="fl"><li>Real-time overdue alerts with color-coded KPI cards</li><li>Smart CSV/Excel import — 12+ header variations, 5+ date formats</li><li>Inline cell editing with auto-save to Supabase</li><li>17 electricity company payment portal quick links</li></ul><div class="ibox" style="background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.18)"><span class="ilbl" style="color:#60a5fa">💥 Impact</span>Eliminated manual tracking, zero missed due dates across 87 stores</div></div></div><div class="ehint">↓ expand details</div>
+    </div>
+
+    <div class="pc rv" onclick="toggleP(this)">
+      <div class="ptop" style="background:linear-gradient(90deg,#7c3aed,#a855f7)"></div>
+      <div class="pc-img">
+        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&q=80" alt="" loading="lazy"/>
+        <div class="pov"></div>
+        <div class="pc-lottie-overlay">
+          <lottie-player src="https://assets3.lottiefiles.com/packages/lf20_vnikecqo.json" background="transparent" speed="1" loop autoplay style="width:60px;height:60px"></lottie-player>
+        </div>
+      </div>
+      <div class="pb"><div class="phd"><span class="pem">📋</span><a href="https://licensetracker.bizops-163.workers.dev/" target="_blank" class="plive" onclick="event.stopPropagation()"><span class="pld"></span>LIVE</a></div><div class="ptitle">License Tracker</div><div class="psub">Compliance Management</div><div class="ptags"><span class="ptg bgp cp">JavaScript</span><span class="ptg bgp cp">Supabase</span><span class="ptg bgp cp">HTML/CSS</span></div><div class="psr"><div class="ps"><div class="psv cp">99</div><div class="psl">Stores</div></div><div class="ps"><div class="psv cp">10</div><div class="psl">Licenses</div></div><div class="ps"><div class="psv cp">6</div><div class="psl">Steps</div></div><div class="ps"><div class="psv cp">Pan-IN</div><div class="psl">Scope</div></div></div></div><div class="pex"><div class="pxi"><ul class="fl"><li>10 license types — Trade, FSSAI, CLRA, Fire NOC, PTEC &amp; more</li><li>Multi-step workflow: Docs → Verify → Vendor → Application → Receipt</li><li>Per-license &amp; per-store compliance % with progress bars</li><li>Google Drive integration for document storage</li></ul><div class="ibox" style="background:rgba(139,92,246,.07);border:1px solid rgba(139,92,246,.18)"><span class="ilbl" style="color:#c084fc">💥 Impact</span>Single source of truth for compliance across 99 locations, 10 categories</div></div></div><div class="ehint">↓ expand details</div>
+    </div>
+
+    <div class="pc rv" onclick="toggleP(this)">
+      <div class="ptop" style="background:linear-gradient(90deg,#dc2626,#f97316)"></div>
+      <div class="pc-img">
+        <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&q=80" alt="" loading="lazy"/>
+        <div class="pov"></div>
+      </div>
+      <div class="pb"><div class="phd"><span class="pem">📹</span><a href="https://cctv-r8g.pages.dev/" target="_blank" class="plive" onclick="event.stopPropagation()"><span class="pld"></span>LIVE</a></div><div class="ptitle">CCTV Tracker</div><div class="psub">Surveillance Management</div><div class="ptags"><span class="ptg bgr cr">JavaScript</span><span class="ptg bgr cr">Supabase</span><span class="ptg bgr cr">Cloudflare</span></div><div class="psr"><div class="ps"><div class="psv cr">80+</div><div class="psl">Locations</div></div><div class="ps"><div class="psv cr">Multi</div><div class="psl">Cameras</div></div><div class="ps"><div class="psv cr">Live</div><div class="psl">Status</div></div><div class="ps"><div class="psv cr">Pan-IN</div><div class="psl">Scope</div></div></div></div><div class="pex"><div class="pxi"><ul class="fl"><li>Centralized CCTV monitoring across all store locations</li><li>Camera status — Online / Offline / Maintenance tracking</li><li>Vendor and AMC contract management</li><li>Issue reporting and resolution tracking</li></ul><div class="ibox" style="background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.18)"><span class="ilbl" style="color:#f87171">💥 Impact</span>Centralized surveillance across 80+ locations for security compliance</div></div></div><div class="ehint">↓ expand details</div>
+    </div>
+
+    <div class="pc rv" onclick="toggleP(this)">
+      <div class="ptop" style="background:linear-gradient(90deg,#d97706,#f59e0b)"></div>
+      <div class="pc-img">
+        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80" alt="" loading="lazy"/>
+        <div class="pov"></div>
+      </div>
+      <div class="pb"><div class="phd"><span class="pem">📡</span><span class="pbdg" style="background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.25)">Auto Alert</span></div><div class="ptitle">WiFi Payment Tracker</div><div class="psub">Auto-Alert Email System</div><div class="ptags"><span class="ptg bga ca">Google Sheets</span><span class="ptg bga ca">Apps Script</span><span class="ptg bga ca">HTML Email</span></div><div class="psr"><div class="ps"><div class="psv ca">170+</div><div class="psl">Connections</div></div><div class="ps"><div class="psv ca">6</div><div class="psl">ISPs</div></div><div class="ps"><div class="psv ca">5</div><div class="psl">Cities</div></div><div class="ps"><div class="psv ca">Auto</div><div class="psl">Alert</div></div></div></div><div class="pex"><div class="pxi"><ul class="fl"><li>Auto-calculates next due date from payment + tenure</li><li>Color-coded status — green OK / red overdue</li><li>Auto HTML email alerts with branded header &amp; KPI badges</li><li>Covers Airtel, ACT, Jio, BSNL, Excitel, Asianet</li></ul><div class="ibox" style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.18)"><span class="ilbl" style="color:#fbbf24">💥 Impact</span>Zero missed WiFi renewals across 170+ connections</div></div></div><div class="ehint">↓ expand details</div>
+    </div>
+
+    <div class="pc rv" onclick="toggleP(this)">
+      <div class="ptop" style="background:linear-gradient(90deg,#059669,#10b981)"></div>
+      <div class="pc-img">
+        <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80" alt="" loading="lazy"/>
+        <div class="pov"></div>
+      </div>
+      <div class="pb"><div class="phd"><span class="pem">✉️</span><span class="pbdg" style="background:rgba(16,185,129,.12);color:#4ade80;border:1px solid rgba(16,185,129,.25)">Automated</span></div><div class="ptitle">HR Letter Automation</div><div class="psub">India &amp; UAE Operations</div><div class="ptags"><span class="ptg bgg cg">Google Sheets</span><span class="ptg bgg cg">Apps Script</span><span class="ptg bgg cg">Custom UI</span></div><div class="psr"><div class="ps"><div class="psv cg">880+</div><div class="psl">Records</div></div><div class="ps"><div class="psv cg">3</div><div class="psl">Types</div></div><div class="ps"><div class="psv cg">IND+UAE</div><div class="psl">Regions</div></div><div class="ps"><div class="psv cg">95%</div><div class="psl">Time Saved</div></div></div></div><div class="pex"><div class="pxi"><ul class="fl"><li>Custom popup UI with Zippee branded header</li><li>3 letter types: Warning, Absconding, Termination</li><li>Smart validation — warns on missing vendor/data</li><li>One-click send, replicated for UAE</li></ul><div class="ibox" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.18)"><span class="ilbl" style="color:#4ade80">💥 Impact</span>15-20 min → under 1 min per letter — adopted India &amp; UAE</div></div></div><div class="ehint">↓ expand details</div>
+    </div>
+
+  </div></div>
+
+  <div class="pw" id="tab-col"><div class="pgrid">
+    <div class="pc feat rv" onclick="toggleP(this)"><div class="ptop" style="background:linear-gradient(90deg,#eab308,#f59e0b)"></div><div class="pc-img"><img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80" alt="" loading="lazy"/><div class="pov"></div></div><div class="pb"><div class="phd"><span class="pem">🛒</span><span class="pbdg" style="background:rgba(234,179,8,.12);color:#eab308;border:1px solid rgba(234,179,8,.25)">Power BI</span></div><div class="ptitle">Blinkit Sales Dashboard</div><div class="psub">Grocery &amp; Quick Commerce Analytics</div><div class="ptags"><span class="ptg bga ca">Power BI</span><span class="ptg bga ca">DAX</span><span class="ptg bga ca">Data Modeling</span><span class="ptg bga ca">Excel</span></div><div class="psr"><div class="ps"><div class="psv ca">1.20M</div><div class="psl">Total Sales</div></div><div class="ps"><div class="psv ca">₹140.99</div><div class="psl">Avg Sale</div></div><div class="ps"><div class="psv ca">3.92</div><div class="psl">Avg Rating</div></div><div class="ps"><div class="psv ca">9K</div><div class="psl">Items</div></div></div></div><div class="pex"><div class="pxi"><ul class="fl"><li>4 KPI cards — Total Sales 1.20M, Avg Sale ₹140.99, Rating 3.92, Items 9K</li><li>Sales by Item Type — Fruits, Snacks, Household, Dairy, Canned, Baking</li><li>Donut chart — Fat Content: 64.6% Low Fat vs 35.4% Regular</li><li>Sales by Outlet Size: High ₹2.48L, Medium ₹5.07L, Small ₹4.44L</li><li>Year slicer 2011–2022, custom Blinkit yellow theme</li></ul><div class="ibox" style="background:rgba(234,179,8,.07);border:1px solid rgba(234,179,8,.22)"><span class="ilbl" style="color:#eab308">🎓 College Project</span>End-to-end Power BI dashboard with advanced DAX and custom branding</div></div></div><div class="ehint">↓ expand details</div></div>
+    <div class="pc rv" onclick="toggleP(this)"><div class="ptop" style="background:linear-gradient(90deg,#e11d48,#f43f5e)"></div><div class="pc-img"><img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80" alt="" loading="lazy"/><div class="pov"></div></div><div class="pb"><div class="phd"><span class="pem">🍽️</span><span class="pbdg" style="background:rgba(225,29,72,.12);color:#f43f5e;border:1px solid rgba(225,29,72,.25)">Power BI</span></div><div class="ptitle">Zomato Sales Dashboard</div><div class="psub">Restaurant &amp; Food Delivery Analytics</div><div class="ptags"><span class="ptg bgr cr">Power BI</span><span class="ptg bgr cr">DAX</span><span class="ptg bgr cr">Data Modeling</span></div><div class="psr"><div class="ps"><div class="psv cr">148.66K</div><div class="psl">Orders</div></div><div class="ps"><div class="psv cr">964M</div><div class="psl">Sales</div></div><div class="ps"><div class="psv cr">2.55</div><div class="psl">Avg Rating</div></div><div class="ps"><div class="psv cr">3</div><div class="psl">Pages</div></div></div></div><div class="pex"><div class="pxi"><ul class="fl"><li>3-page report: Yearly, Monthly Sales, Users</li><li>Cuisine breakdown: North Indian, Chinese, Bakery, Pizzas, Beverages</li><li>Restaurant ranking: Domino's, KFC, Pizza Hut, Biryani House</li><li>Overall rating gauge: 2.55 / 5.00 — Year, Month, City filters</li></ul><div class="ibox" style="background:rgba(225,29,72,.07);border:1px solid rgba(225,29,72,.22)"><span class="ilbl" style="color:#f43f5e">🎓 College Project</span>Multi-page Power BI dashboard with complex DAX and drill-down</div></div></div><div class="ehint">↓ expand details</div></div>
+    <div class="pc rv" onclick="toggleP(this)"><div class="ptop" style="background:linear-gradient(90deg,#0ea5e9,#6366f1)"></div><div class="pc-img"><img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&q=80" alt="" loading="lazy"/><div class="pov"></div></div><div class="pb"><div class="phd"><span class="pem">🎬</span><span class="pbdg" style="background:rgba(14,165,233,.12);color:#38bdf8;border:1px solid rgba(14,165,233,.25)">ML / Python</span></div><div class="ptitle">Movie Recommendation</div><div class="psub">Content-Based ML with TMDB API</div><div class="ptags"><span class="ptg bgt ct">Python</span><span class="ptg bgt ct">Scikit-learn</span><span class="ptg bgt ct">Streamlit</span><span class="ptg bgt ct">TMDB API</span></div><div class="psr"><div class="ps"><div class="psv ct">5000+</div><div class="psl">Movies</div></div><div class="ps"><div class="psv ct">Cosine</div><div class="psl">Similarity</div></div><div class="ps"><div class="psv ct">5</div><div class="psl">Recs/query</div></div><div class="ps"><div class="psv ct">Live</div><div class="psl">Posters</div></div></div></div><div class="pex"><div class="pxi"><ul class="fl"><li>Cosine similarity on TF-IDF vectors</li><li>NLP — stopword removal, stemming, vectorization</li><li>TMDB API — live posters, genres, ratings</li><li>Streamlit UI with dropdown search &amp; poster grid</li></ul><div class="ibox" style="background:rgba(14,165,233,.07);border:1px solid rgba(14,165,233,.22)"><span class="ilbl" style="color:#38bdf8">🎓 College Project</span>Full ML pipeline: data → NLP → cosine similarity → Streamlit + TMDB API</div></div></div><div class="ehint">↓ expand details</div></div>
+    <div class="pc feat rv" onclick="toggleP(this)"><div class="ptop" style="background:linear-gradient(90deg,#1e3a8a,#3b82f6)"></div><div class="pc-img"><img src="https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?w=800&q=80" alt="" loading="lazy"/><div class="pov"></div></div><div class="pb"><div class="phd"><span class="pem">🏦</span><span class="pbdg" style="background:rgba(59,130,246,.12);color:#60a5fa;border:1px solid rgba(59,130,246,.25)">Power BI</span></div><div class="ptitle">Banking Domain Analysis</div><div class="psub">Loan &amp; Deposit Analytics</div><div class="ptags"><span class="ptg bgb cb">Power BI</span><span class="ptg bgb cb">DAX</span><span class="ptg bgb cb">Banking Domain</span></div><div class="psr"><div class="ps"><div class="psv cb">3.77bn</div><div class="psl">Total Deposit</div></div><div class="ps"><div class="psv cb">2.01bn</div><div class="psl">Bank Deposit</div></div><div class="ps"><div class="psv cb">4</div><div class="psl">Pages</div></div><div class="ps"><div class="psv cb">2013–21</div><div class="psl">Years</div></div></div></div><div class="pex"><div class="pxi"><ul class="fl"><li>4 pages: Home, Loan Analysis, Deposit Analysis, Summary</li><li>Deposit KPIs: Total 3.77bn, Bank 2.01bn, Saving 698.7M</li><li>Income Band donut: Medium 54.17%, Low 24.79%, High 21.05%</li><li>Filters: Gender, Advisor, Year (2013–2021)</li></ul><div class="ibox" style="background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.22)"><span class="ilbl" style="color:#60a5fa">🎓 College Project</span>Professional banking dashboard with loan &amp; deposit KPIs</div></div></div><div class="ehint">↓ expand details</div></div>
+  </div></div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     SKILLS — 3D Sphere + Skill Bars
+═══════════════════════════════════════════ -->
+<section id="skills">
+  <div class="sec-w rv sh" style="padding-bottom:0"><div class="stag">Tech Stack</div><h2 class="stitle">Skills &amp; Technologies</h2><p class="ssub">🖱️ Drag to spin · hover any sphere for details</p></div>
+  <div class="sphere-wrap"><canvas id="sc"></canvas><div id="tip"><div id="tip-n"></div><div id="tip-l"></div></div></div>
+  <div class="skills-inner"><div class="sg-grid">
+    <div class="sg rl"><div class="sg-t">🔤 Languages</div>
+      <div class="skr"><span class="sk-i">🐍</span><span class="sk-n">Python</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#22c55e)" data-w="90"></div></div><span class="sk-p">90%</span></div>
+      <div class="skr"><span class="sk-i">🗄️</span><span class="sk-n">SQL</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#22c55e)" data-w="88"></div></div><span class="sk-p">88%</span></div>
+      <div class="skr"><span class="sk-i">⚡</span><span class="sk-n">JavaScript</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#3b82f6)" data-w="85"></div></div><span class="sk-p">85%</span></div>
+      <div class="skr"><span class="sk-i">📜</span><span class="sk-n">Apps Script</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#3b82f6)" data-w="82"></div></div><span class="sk-p">82%</span></div>
+      <div class="skr"><span class="sk-i">🎨</span><span class="sk-n">HTML/CSS</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#f59e0b)" data-w="80"></div></div><span class="sk-p">80%</span></div>
+    </div>
+    <div class="sg rv"><div class="sg-t">🔧 Tools</div>
+      <div class="skr"><span class="sk-i">📗</span><span class="sk-n">Advanced Excel</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#22c55e)" data-w="90"></div></div><span class="sk-p">90%</span></div>
+      <div class="skr"><span class="sk-i">📊</span><span class="sk-n">Power BI</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#22c55e)" data-w="88"></div></div><span class="sk-p">88%</span></div>
+      <div class="skr"><span class="sk-i">🔥</span><span class="sk-n">Supabase</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#3b82f6)" data-w="88"></div></div><span class="sk-p">88%</span></div>
+      <div class="skr"><span class="sk-i">📈</span><span class="sk-n">Chart.js</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#f59e0b)" data-w="80"></div></div><span class="sk-p">80%</span></div>
+      <div class="skr"><span class="sk-i">🐙</span><span class="sk-n">Git/GitHub</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#f59e0b)" data-w="75"></div></div><span class="sk-p">75%</span></div>
+    </div>
+    <div class="sg rl"><div class="sg-t">📦 Libraries</div>
+      <div class="skr"><span class="sk-i">🐼</span><span class="sk-n">Pandas/NumPy</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#22c55e)" data-w="85"></div></div><span class="sk-p">85%</span></div>
+      <div class="skr"><span class="sk-i">📉</span><span class="sk-n">Matplotlib</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#3b82f6)" data-w="82"></div></div><span class="sk-p">82%</span></div>
+      <div class="skr"><span class="sk-i">🤖</span><span class="sk-n">Scikit-learn</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#f59e0b)" data-w="75"></div></div><span class="sk-p">75%</span></div>
+      <div class="skr"><span class="sk-i">🍜</span><span class="sk-n">BeautifulSoup</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#f59e0b)" data-w="70"></div></div><span class="sk-p">70%</span></div>
+    </div>
+    <div class="sg rv"><div class="sg-t">🧠 Core Skills</div>
+      <div class="skr"><span class="sk-i">⚙️</span><span class="sk-n">Process Auto.</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#22c55e)" data-w="92"></div></div><span class="sk-p">92%</span></div>
+      <div class="skr"><span class="sk-i">🧠</span><span class="sk-n">Prompt Eng.</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#22c55e)" data-w="92"></div></div><span class="sk-p">92%</span></div>
+      <div class="skr"><span class="sk-i">🎯</span><span class="sk-n">Dashboard Design</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#22c55e)" data-w="88"></div></div><span class="sk-p">88%</span></div>
+      <div class="skr"><span class="sk-i">🏗️</span><span class="sk-n">Database Design</span><div class="sk-bg"><div class="sk-f" style="background:linear-gradient(90deg,#6366f1,#3b82f6)" data-w="82"></div></div><span class="sk-p">82%</span></div>
+    </div>
+  </div></div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     LOTTIE TOOLS STRIP
+═══════════════════════════════════════════ -->
+<div id="lottie-tools" class="rv">
+  <div class="sh" style="margin-bottom:28px">
+    <div class="stag">Toolkit</div>
+    <h2 class="stitle" style="font-size:clamp(22px,3vw,36px)">Technologies I Work With</h2>
+  </div>
+  <div class="lt-strip">
+    <div class="lt-item">
+      <lottie-player src="https://assets9.lottiefiles.com/packages/lf20_qp1q7mct.json" background="transparent" speed="0.8" loop autoplay style="width:52px;height:52px;margin:0 auto"></lottie-player>
+      <div class="lt-name">Python</div><div class="lt-level">90%</div>
+    </div>
+    <div class="lt-item">
+      <lottie-player src="https://assets10.lottiefiles.com/packages/lf20_x62chJ.json" background="transparent" speed="0.8" loop autoplay style="width:52px;height:52px;margin:0 auto"></lottie-player>
+      <div class="lt-name">SQL</div><div class="lt-level">88%</div>
+    </div>
+    <div class="lt-item">
+      <lottie-player src="https://assets7.lottiefiles.com/packages/lf20_2znxgjyt.json" background="transparent" speed="0.8" loop autoplay style="width:52px;height:52px;margin:0 auto"></lottie-player>
+      <div class="lt-name">JavaScript</div><div class="lt-level">85%</div>
+    </div>
+    <div class="lt-item">
+      <lottie-player src="https://assets3.lottiefiles.com/packages/lf20_vnikecqo.json" background="transparent" speed="0.8" loop autoplay style="width:52px;height:52px;margin:0 auto"></lottie-player>
+      <div class="lt-name">Power BI</div><div class="lt-level">88%</div>
+    </div>
+    <div class="lt-item">
+      <lottie-player src="https://assets5.lottiefiles.com/packages/lf20_fcfjwiyb.json" background="transparent" speed="0.8" loop autoplay style="width:52px;height:52px;margin:0 auto"></lottie-player>
+      <div class="lt-name">Automation</div><div class="lt-level">92%</div>
+    </div>
+    <div class="lt-item">
+      <lottie-player src="https://assets4.lottiefiles.com/packages/lf20_u4yrau84.json" background="transparent" speed="0.8" loop autoplay style="width:52px;height:52px;margin:0 auto"></lottie-player>
+      <div class="lt-name">Supabase</div><div class="lt-level">88%</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     JOURNEY
+═══════════════════════════════════════════ -->
+<section id="journey">
+  <div class="sh rv"><div class="stag">Career Path</div><h2 class="stitle">My Journey</h2><p class="ssub">From foundations to production systems</p></div>
+  <div class="tl">
+    <div class="tli"><div class="tld">🎓</div><div class="tlin"><div class="tlbar" style="background:linear-gradient(#6366f1,#8b5cf6)"></div><div class="tly">2021</div><div class="tlt">B.Sc Completed</div><div class="tlp">Kumaon University</div><div class="tld2">B.Sc in PCM (Physics, Chemistry, Mathematics) — built the analytical foundation</div></div></div>
+    <div class="tli"><div class="tld">📚</div><div class="tlin"><div class="tlbar" style="background:linear-gradient(#8b5cf6,#06b6d4)"></div><div class="tly">2023</div><div class="tlt">MCA Started</div><div class="tlp">Uttarakhand Technical University</div><div class="tld2">Advanced CS with 79% — built Blinkit, Zomato, Movie &amp; Banking dashboards</div></div></div>
+    <div class="tli"><div class="tld">📊</div><div class="tlin"><div class="tlbar" style="background:linear-gradient(#06b6d4,#22c55e)"></div><div class="tly">2024</div><div class="tlt">Data Analyst Intern</div><div class="tlp">Digital T Lab &amp; Accenture</div><div class="tld2">Python, Power BI, SQL real-world projects — applied data in industry</div></div></div>
+    <div class="tli"><div class="tld">🚀</div><div class="tlin"><div class="tlbar" style="background:linear-gradient(#22c55e,#f4c542)"></div><div class="tly">2025</div><div class="tlt">Business Ops Analyst</div><div class="tlp">Zippee — 6 production tools shipped</div><div class="tld2">80+ stores, India + UAE — from idea to live system in weeks</div><div class="tlbdg" style="background:rgba(124,111,255,.1);color:var(--ac2);border:1px solid var(--b2)">CURRENT</div></div></div>
+    <div class="tli"><div class="tld">🎯</div><div class="tlin"><div class="tlbar" style="background:linear-gradient(#f4c542,#ff6b6b)"></div><div class="tly">2025+</div><div class="tlt">Seeking Data Analyst Role</div><div class="tlp">Ready for full-time opportunities — India / Remote</div><div class="tld2">Looking to bring my systems-building mindset, operational data expertise, and automation skills into a dedicated data role.</div><div class="tlbdg" style="background:rgba(6,214,160,.1);color:var(--ac3);border:1px solid rgba(6,214,160,.25)">OPEN TO WORK</div></div></div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     CONTACT — with Lottie handshake animation
+═══════════════════════════════════════════ -->
+<section id="contact">
+  <div class="cc rv">
+    <!-- Lottie handshake / contact animation instead of static emoji -->
+    <div class="cc-lottie">
+      <lottie-player
+        src="https://assets6.lottiefiles.com/packages/lf20_u25cckyh.json"
+        background="transparent" speed="1" loop autoplay
+        style="width:120px;height:120px">
+      </lottie-player>
+    </div>
+    <div class="cc-t">Let's Build Together</div>
+    <div class="cc-s">Open for Data Analyst &amp; Business Analyst roles — India / Remote</div>
+    <div class="clinks">
+      <a href="mailto:mbhakuni678@gmail.com" class="clink" onclick="window.location.href='mailto:mbhakuni678@gmail.com'">✉️ &nbsp;mbhakuni678@gmail.com</a>
+      <a href="tel:+918057231133" class="clink" onclick="window.location.href='tel:+918057231133'">📞 &nbsp;+91-8057231133</a>
+    </div>
+    <div class="srow">
+      <a href="https://www.linkedin.com/in/manish-singh-bhakuni-b81955312" target="_blank" class="sb" style="background:linear-gradient(135deg,#0077b5,#00a0dc);color:#fff;box-shadow:0 4px 20px rgba(0,119,181,.3)"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>LinkedIn</a>
+      <a href="https://github.com/manishbhakuni8122" target="_blank" class="sb" style="background:linear-gradient(135deg,#24292e,#444);color:#fff"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>GitHub</a>
+    </div>
+  </div>
+</section>
+<footer>Designed &amp; Built by Manish Singh Bhakuni · © 2026 · mbhakuni678@gmail.com</footer>
+
+<script>
+/* ──────────── SCROLL PROGRESS ──────────── */
+const bar=document.getElementById('progress-bar');
+window.addEventListener('scroll',()=>{const s=document.documentElement;bar.style.width=(s.scrollTop/(s.scrollHeight-s.clientHeight)*100)+'%'});
+
+/* ──────────── CURSOR ──────────── */
+const curEl=document.getElementById('cur'),ringEl=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;curEl.style.left=mx+'px';curEl.style.top=my+'px'});
+(function mr(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ringEl.style.left=rx+'px';ringEl.style.top=ry+'px';requestAnimationFrame(mr)})();
+document.querySelectorAll('a,button,.pc,.lottie-card,.lt-item').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'))});
+
+/* ──────────── HERO VIDEO FALLBACK ──────────── */
+const vid=document.getElementById('hero-vid');
+if(vid){
+  vid.addEventListener('error',()=>{
+    // If video fails, show animated canvas fallback (already exists as bg-canvas)
+    vid.parentElement.style.opacity='0';
+  });
+  // Timeout fallback — if video doesn't load in 4s, hide it gracefully
+  setTimeout(()=>{if(vid.readyState<2)vid.parentElement.style.opacity='0';},4000);
+}
+
+/* ──────────── DATA UNIVERSE — Custom Three.js Scene ──────────── */
+(function(){
+  const canvas = document.getElementById('du-canvas');
+  if(!canvas) return;
+
+  const W = canvas.parentElement.clientWidth;
+  const H = 500;
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  renderer.setSize(W, H);
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setClearColor(0x020209, 1);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, W/H, 0.1, 500);
+  camera.position.set(0, 0, 38);
+
+  // Fog for depth
+  scene.fog = new THREE.FogExp2(0x020209, 0.018);
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0xffffff, 0.3));
+  const pl1 = new THREE.PointLight(0x7c6fff, 6, 60); pl1.position.set(-10,8,10); scene.add(pl1);
+  const pl2 = new THREE.PointLight(0x06d6a0, 4, 50); pl2.position.set(12,-6,8); scene.add(pl2);
+  const pl3 = new THREE.PointLight(0xa78bfa, 3, 40); pl3.position.set(0,14,-5); scene.add(pl3);
+
+  const group = new THREE.Group();
+  scene.add(group);
+
+  // ── DATA NODES (labelled spheres) ──
+  const NODES = [
+    {label:'Python',     color:0x3776AB, size:1.4, pos:[0,0,0]},
+    {label:'SQL',        color:0x336791, size:1.1, pos:[5,3,2]},
+    {label:'Power BI',   color:0xF2C811, size:1.2, pos:[-5,2,1]},
+    {label:'Supabase',   color:0x3ECF8E, size:1.0, pos:[3,-4,3]},
+    {label:'JavaScript', color:0xF7DF1E, size:1.1, pos:[-4,-3,2]},
+    {label:'Excel',      color:0x217346, size:1.0, pos:[7,-1,-1]},
+    {label:'Pandas',     color:0x150458, size:0.85,pos:[-7,1,-2]},
+    {label:'Scikit',     color:0xF7931E, size:0.8, pos:[2,6,1]},
+    {label:'Chart.js',   color:0xFF6384, size:0.8, pos:[-2,-6,2]},
+    {label:'Git',        color:0xF05032, size:0.75,pos:[6,5,-2]},
+    {label:'HTML/CSS',   color:0xE34F26, size:0.8, pos:[-6,-4,-1]},
+    {label:'NumPy',      color:0x4DABCF, size:0.75,pos:[1,-2,6]},
+    {label:'Automation', color:0x7C6FFF, size:1.25,pos:[-1,1,-6]},
+    {label:'Prompt Eng', color:0x8B5CF6, size:1.2, pos:[4,1,-5]},
+    {label:'Dashboard',  color:0x06D6A0, size:1.0, pos:[-4,4,-3]},
+  ];
+
+  const nodeMeshes = [];
+  const glowMeshes = [];
+
+  NODES.forEach(nd => {
+    // Core sphere
+    const geo = new THREE.SphereGeometry(nd.size, 32, 32);
+    const mat = new THREE.MeshPhongMaterial({
+      color: nd.color,
+      emissive: new THREE.Color(nd.color).multiplyScalar(0.25),
+      specular: 0xffffff,
+      shininess: 90,
+      transparent: true,
+      opacity: 0.92
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(...nd.pos);
+    mesh.userData = { label: nd.label, origColor: nd.color, origEmissive: 0.25 };
+    group.add(mesh);
+    nodeMeshes.push(mesh);
+
+    // Outer glow ring
+    const rGeo = new THREE.TorusGeometry(nd.size * 1.55, 0.04, 8, 48);
+    const rMat = new THREE.MeshBasicMaterial({
+      color: nd.color, transparent: true, opacity: 0.22
+    });
+    const ring = new THREE.Mesh(rGeo, rMat);
+    ring.position.set(...nd.pos);
+    ring.userData = { baseOpacity: 0.22, phaseSeed: Math.random()*Math.PI*2 };
+    group.add(ring);
+    glowMeshes.push(ring);
+  });
+
+  // ── CONNECTIONS between nearby nodes ──
+  const lineMat = new THREE.LineBasicMaterial({
+    color: 0x7c6fff, transparent: true, opacity: 0.18, linewidth: 1
+  });
+
+  NODES.forEach((a, i) => {
+    NODES.forEach((b, j) => {
+      if(j <= i) return;
+      const dx=a.pos[0]-b.pos[0], dy=a.pos[1]-b.pos[1], dz=a.pos[2]-b.pos[2];
+      const dist = Math.sqrt(dx*dx+dy*dy+dz*dz);
+      if(dist < 9) {
+        const pts = [new THREE.Vector3(...a.pos), new THREE.Vector3(...b.pos)];
+        const geo = new THREE.BufferGeometry().setFromPoints(pts);
+        group.add(new THREE.Line(geo, lineMat));
+      }
+    });
+  });
+
+  // ── FLOATING PARTICLES ──
+  const NPARTS = 600;
+  const pArr = new Float32Array(NPARTS * 3);
+  for(let i = 0; i < NPARTS*3; i++) pArr[i] = (Math.random()-0.5)*70;
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pArr, 3));
+  const pMat = new THREE.PointsMaterial({
+    color: 0x7c6fff, size: 0.18, transparent: true, opacity: 0.55
+  });
+  scene.add(new THREE.Points(pGeo, pMat));
+
+  // ── OUTER WIREFRAME SPHERE ──
+  const outerGeo = new THREE.SphereGeometry(16, 20, 20);
+  const outerMat = new THREE.MeshBasicMaterial({
+    color: 0x7c6fff, wireframe: true, transparent: true, opacity: 0.04
+  });
+  scene.add(new THREE.Mesh(outerGeo, outerMat));
+
+  // ── TOOLTIP ──
+  const tooltip = document.createElement('div');
+  tooltip.style.cssText = `
+    position:absolute;top:0;left:0;display:none;pointer-events:none;z-index:20;
+    background:rgba(8,8,28,.95);border:1px solid rgba(120,100,255,.4);
+    border-radius:10px;padding:8px 14px;backdrop-filter:blur(14px);
+    font-family:'JetBrains Mono',monospace;white-space:nowrap;
+    transition:opacity .2s;
+  `;
+  canvas.parentElement.appendChild(tooltip);
+
+  // ── DRAG / ORBIT ──
+  let isDragging=false, lastX=0, lastY=0, velX=0.003, velY=0.0005;
+  let zoom = 38;
+
+  canvas.addEventListener('mousedown', e=>{isDragging=true;lastX=e.clientX;lastY=e.clientY;canvas.style.cursor='grabbing'});
+  window.addEventListener('mouseup', ()=>{isDragging=false;canvas.style.cursor='grab'});
+  window.addEventListener('mousemove', e=>{
+    if(isDragging){
+      const dx=e.clientX-lastX, dy=e.clientY-lastY;
+      group.rotation.y += dx*0.007;
+      group.rotation.x += dy*0.007;
+      velX = dx*0.003; velY = dy*0.001;
+      lastX=e.clientX; lastY=e.clientY;
+    }
+    // Raycasting for tooltip
+    const rect = canvas.getBoundingClientRect();
+    const mx = ((e.clientX-rect.left)/rect.width)*2-1;
+    const my = -((e.clientY-rect.top)/rect.height)*2+1;
+    const ray = new THREE.Raycaster();
+    ray.setFromCamera({x:mx,y:my}, camera);
+    const hits = ray.intersectObjects(nodeMeshes);
+    if(hits.length){
+      const nd = hits[0].object.userData;
+      tooltip.style.display='block';
+      tooltip.style.left=(e.clientX-rect.left+16)+'px';
+      tooltip.style.top=(e.clientY-rect.top-8)+'px';
+      tooltip.innerHTML=`<span style="color:#a78bfa;font-size:13px;font-weight:800">${nd.label}</span>`;
+      // Pulse hovered node
+      hits[0].object.material.emissive.setHex(nd.origColor);
+    } else {
+      tooltip.style.display='none';
+    }
+  });
+
+  // Scroll to zoom
+  canvas.addEventListener('wheel', e=>{
+    zoom = Math.max(16, Math.min(60, zoom + e.deltaY * 0.05));
+    e.preventDefault();
+  }, {passive:false});
+
+  // Touch support
+  canvas.addEventListener('touchstart', e=>{isDragging=true;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY},{passive:true});
+  canvas.addEventListener('touchend', ()=>isDragging=false);
+  canvas.addEventListener('touchmove', e=>{
+    if(!isDragging)return;
+    const dx=e.touches[0].clientX-lastX, dy=e.touches[0].clientY-lastY;
+    group.rotation.y+=dx*0.007; group.rotation.x+=dy*0.007;
+    velX=dx*0.003; velY=dy*0.001;
+    lastX=e.touches[0].clientX; lastY=e.touches[0].clientY;
+  },{passive:true});
+
+  // ── ANIMATE ──
+  let t=0;
+  (function animate(){
+    requestAnimationFrame(animate);
+    t += 0.008;
+
+    if(!isDragging){
+      group.rotation.y += velX;
+      group.rotation.x += velY;
+      velX *= 0.97; velY *= 0.97;
+      group.rotation.y += 0.0018;
+    }
+
+    // Smooth zoom
+    camera.position.z += (zoom - camera.position.z) * 0.06;
+
+    // Pulse rings
+    glowMeshes.forEach((r,i)=>{
+      r.material.opacity = r.userData.baseOpacity + Math.sin(t*1.5+r.userData.phaseSeed)*0.12;
+      r.rotation.x = t*0.3 + r.userData.phaseSeed;
+      r.rotation.y = t*0.5 + r.userData.phaseSeed;
+    });
+
+    // Animate node emissive pulse back down
+    nodeMeshes.forEach(m=>{
+      const c = new THREE.Color(m.userData.origColor).multiplyScalar(0.25 + Math.sin(t*1.2+m.position.x)*0.08);
+      m.material.emissive.lerp(c, 0.05);
+      // gentle bobbing
+      m.position.y += Math.sin(t*0.8+m.position.x*0.3)*0.002;
+    });
+
+    // Orbit lights
+    pl1.position.x = Math.sin(t*0.4)*14;
+    pl1.position.y = Math.cos(t*0.3)*10;
+    pl2.position.x = Math.cos(t*0.35)*14;
+    pl2.position.z = Math.sin(t*0.28)*10;
+
+    renderer.render(scene, camera);
+  })();
+
+  // Resize
+  window.addEventListener('resize', ()=>{
+    const nW = canvas.parentElement.clientWidth;
+    renderer.setSize(nW, H);
+    camera.aspect = nW/H;
+    camera.updateProjectionMatrix();
+  });
+})();
+
+/* ──────────── BG PARTICLES (Three.js) ──────────── */
+(function(){
+const c=document.getElementById('bg-canvas'),r=new THREE.WebGLRenderer({canvas:c,antialias:true,alpha:true});
+r.setSize(innerWidth,innerHeight);r.setPixelRatio(Math.min(devicePixelRatio,2));
+const s=new THREE.Scene(),cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,1000);cam.position.z=30;
+const N=1500,p=new Float32Array(N*3);for(let i=0;i<N*3;i++)p[i]=(Math.random()-.5)*130;
+const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(p,3));
+const pts=new THREE.Points(g,new THREE.PointsMaterial({color:0x7c6fff,size:.25,transparent:true,opacity:.5}));s.add(pts);
+function ws(rad,col,x,y,z){const m=new THREE.Mesh(new THREE.SphereGeometry(rad,10,10),new THREE.MeshBasicMaterial({color:col,wireframe:true,transparent:true,opacity:.06}));m.position.set(x,y,z);s.add(m);return m}
+const s1=ws(8,0x7c6fff,10,0,0),s2=ws(5,0x06d6a0,-10,4,-5),s3=ws(3,0xa78bfa,0,-8,2);
+const tor=new THREE.Mesh(new THREE.TorusGeometry(6,.35,8,40),new THREE.MeshBasicMaterial({color:0x7c6fff,wireframe:true,transparent:true,opacity:.07}));tor.position.set(-8,5,-10);s.add(tor);
+let t=0;(function a(){requestAnimationFrame(a);t+=.003;pts.rotation.y=t*.2;pts.rotation.x=t*.05;s1.rotation.y=t;s1.rotation.x=t*.5;s2.rotation.y=-t*.7;s3.rotation.y=t*.5;tor.rotation.x=t*.4;tor.rotation.y=t*.6;r.render(s,cam)})();
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();r.setSize(innerWidth,innerHeight)});
+})();
+
+/* ──────────── 3D SKILL SPHERE ──────────── */
+(function(){
+const SK=[
+  {n:'Python',l:'90%',c:'#3776AB',s:1.4,logo:'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'},
+  {n:'SQL',l:'88%',c:'#336791',s:1.3,logo:'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg'},
+  {n:'JavaScript',l:'85%',c:'#F7DF1E',s:1.25,logo:'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg'},
+  {n:'Power BI',l:'88%',c:'#F2C811',s:1.35,logo:'https://img.icons8.com/fluency/96/power-bi-2021.png'},
+  {n:'Supabase',l:'88%',c:'#3ECF8E',s:1.28,logo:'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/supabase/supabase-original.svg'},
+  {n:'Excel',l:'90%',c:'#217346',s:1.35,logo:'https://img.icons8.com/color/96/microsoft-excel-2019.png'},
+  {n:'Apps Script',l:'82%',c:'#4285F4',s:1.1,logo:'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg'},
+  {n:'Pandas',l:'85%',c:'#150458',s:1.15,logo:'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg'},
+  {n:'Scikit-learn',l:'75%',c:'#F7931E',s:1.0,logo:'https://upload.wikimedia.org/wikipedia/commons/0/05/Scikit_learn_logo_small.svg'},
+  {n:'Matplotlib',l:'82%',c:'#11557C',s:1.1,logo:'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/matplotlib/matplotlib-original.svg'},
+  {n:'HTML/CSS',l:'80%',c:'#E34F26',s:1.1,logo:'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg'},
+  {n:'Git',l:'75%',c:'#F05032',s:1.0,logo:'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg'},
+  {n:'Chart.js',l:'80%',c:'#FF6384',s:1.05,logo:'https://www.chartjs.org/img/chartjs-logo.svg'},
+  {n:'Prompt Eng',l:'92%',c:'#8B5CF6',s:1.45,logo:'https://img.icons8.com/fluency/96/brain.png'},
+  {n:'Automation',l:'92%',c:'#7C6FFF',s:1.42,logo:'https://img.icons8.com/fluency/96/settings.png'},
+  {n:'Dashboard',l:'88%',c:'#06D6A0',s:1.2,logo:'https://img.icons8.com/fluency/96/combo-chart.png'},
+  {n:'NumPy',l:'85%',c:'#4DABCF',s:1.1,logo:'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg'},
+  {n:'Docker',l:'70%',c:'#2496ED',s:.9,logo:'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg'},
+];
+const cv=document.getElementById('sc'),tip=document.getElementById('tip'),tipN=document.getElementById('tip-n'),tipL=document.getElementById('tip-l');
+function rsz(){cv.width=cv.parentElement.clientWidth;cv.height=500}rsz();
+const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(52,cv.width/cv.height,.1,500);cam.position.z=22;
+const ren=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});ren.setSize(cv.width,cv.height);ren.setPixelRatio(Math.min(devicePixelRatio,2));ren.setClearColor(0,0);
+scene.add(new THREE.AmbientLight(0xffffff,.6));
+const dl=new THREE.DirectionalLight(0xffffff,1.4);dl.position.set(5,10,10);scene.add(dl);
+const pl1=new THREE.PointLight(0x7c6fff,3,40);pl1.position.set(-8,6,8);scene.add(pl1);
+const pl2=new THREE.PointLight(0x06d6a0,2,30);pl2.position.set(8,-5,5);scene.add(pl2);
+const grp=new THREE.Group();scene.add(grp);const meshes=[];
+const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();
+function fibPos(n,r){const p=[],phi=Math.PI*(3-Math.sqrt(5));for(let i=0;i<n;i++){const y=1-(i/(n-1))*2,rd=Math.sqrt(1-y*y),th=phi*i;p.push(new THREE.Vector3(Math.cos(th)*rd*r,y*r,Math.sin(th)*rd*r))}return p}
+const positions=fibPos(SK.length,7.8);
+SK.forEach((sk,i)=>{
+  const r=sk.s*.74;
+  const texCanvas=document.createElement('canvas');texCanvas.width=512;texCanvas.height=512;
+  const tctx=texCanvas.getContext('2d');
+  tctx.fillStyle=sk.c;tctx.fillRect(0,0,512,512);
+  const rg=tctx.createRadialGradient(180,160,30,256,256,280);
+  rg.addColorStop(0,'rgba(255,255,255,0.35)');rg.addColorStop(0.4,'rgba(255,255,255,0.08)');rg.addColorStop(1,'rgba(0,0,0,0.3)');
+  tctx.fillStyle=rg;tctx.fillRect(0,0,512,512);
+  const sphereTex=new THREE.CanvasTexture(texCanvas);
+  const logoImg=new Image();logoImg.crossOrigin='anonymous';
+  logoImg.onload=function(){
+    tctx.fillStyle='rgba(255,255,255,0.2)';
+    tctx.beginPath();tctx.arc(256,210,95,0,Math.PI*2);tctx.fill();
+    const ls=130;tctx.drawImage(logoImg,(512-ls)/2,210-ls/2,ls,ls);
+    tctx.fillStyle='#ffffff';tctx.font='bold 42px Arial';tctx.textAlign='center';
+    tctx.shadowColor='rgba(0,0,0,0.6)';tctx.shadowBlur=10;
+    const displayName=sk.n.length>11?sk.n.slice(0,9)+'..':sk.n;
+    tctx.fillText(displayName,256,370);tctx.shadowBlur=0;
+    const barW=200,barH=10,barX=(512-barW)/2,barY=395;
+    tctx.fillStyle='rgba(0,0,0,0.3)';tctx.fillRect(barX,barY,barW,barH);
+    const pct=parseInt(sk.l)/100;tctx.fillStyle='rgba(255,255,255,0.7)';tctx.fillRect(barX,barY,barW*pct,barH);
+    tctx.font='bold 24px Arial';tctx.fillStyle='rgba(255,255,255,0.9)';tctx.fillText(sk.l,256,440);
+    sphereTex.needsUpdate=true;
+  };
+  logoImg.onerror=function(){
+    tctx.fillStyle='#ffffff';tctx.font='bold 120px Arial';tctx.textAlign='center';tctx.textBaseline='middle';
+    tctx.shadowColor='rgba(0,0,0,0.5)';tctx.shadowBlur=8;tctx.fillText(sk.n.slice(0,2),256,220);
+    tctx.font='bold 38px Arial';tctx.fillText(sk.n,256,360);tctx.font='bold 28px Arial';tctx.fillText(sk.l,256,420);
+    sphereTex.needsUpdate=true;
+  };
+  logoImg.src=sk.logo;
+  const mat=new THREE.MeshPhongMaterial({map:sphereTex,emissive:new THREE.Color(sk.c).multiplyScalar(.04),specular:new THREE.Color(0xffffff),shininess:80,transparent:true,opacity:.95});
+  const mesh=new THREE.Mesh(new THREE.SphereGeometry(r,48,48),mat);
+  mesh.position.copy(positions[i]);mesh.userData={sk,hov:false};grp.add(mesh);meshes.push(mesh);
+});
+let dragging=false,px=0,py=0,vx=.003,vy=.001;
+cv.addEventListener('mousedown',e=>{dragging=true;px=e.clientX;py=e.clientY;cv.style.cursor='grabbing'});
+addEventListener('mouseup',()=>{dragging=false;cv.style.cursor='grab'});
+addEventListener('mousemove',e=>{
+  if(dragging){const dx=e.clientX-px,dy=e.clientY-py;grp.rotation.y+=dx*.008;grp.rotation.x+=dy*.008;vx=dx*.003;vy=dy*.002;px=e.clientX;py=e.clientY}
+  const rect=cv.getBoundingClientRect();mouse.x=((e.clientX-rect.left)/rect.width)*2-1;mouse.y=-((e.clientY-rect.top)/rect.height)*2+1;
+  ray.setFromCamera(mouse,cam);const hits=ray.intersectObjects(meshes);
+  meshes.forEach(m=>{if(!m.userData.hov)m.scale.lerp(new THREE.Vector3(1,1,1),.12)});
+  if(hits.length){const h=hits[0].object;h.userData.hov=true;h.scale.lerp(new THREE.Vector3(1.4,1.4,1.4),.15);
+    tipN.textContent=h.userData.sk.n;tipL.textContent='Proficiency: '+h.userData.sk.l;tip.style.display='block';
+    tip.style.left=(e.clientX-rect.left+16)+'px';tip.style.top=(e.clientY-rect.top-8)+'px';
+  }else{tip.style.display='none';meshes.forEach(m=>m.userData.hov=false)}
+});
+cv.addEventListener('touchstart',e=>{dragging=true;px=e.touches[0].clientX;py=e.touches[0].clientY},{passive:true});
+cv.addEventListener('touchend',()=>dragging=false);
+cv.addEventListener('touchmove',e=>{if(!dragging)return;const dx=e.touches[0].clientX-px,dy=e.touches[0].clientY-py;grp.rotation.y+=dx*.008;grp.rotation.x+=dy*.008;vx=dx*.003;vy=dy*.002;px=e.touches[0].clientX;py=e.touches[0].clientY},{passive:true});
+let t2=0;(function a(){requestAnimationFrame(a);t2+=.007;
+  if(!dragging){grp.rotation.y+=vx;grp.rotation.x+=vy;vx*=.97;vy*=.97;grp.rotation.y+=.0022}
+  meshes.forEach(m=>{if(m.userData.sk&&!m.userData.hov){m.scale.setScalar(1+Math.sin(t2+m.position.x*.8)*.028)}});
+  pl1.position.x=Math.sin(t2*.45)*10;pl1.position.y=Math.cos(t2*.3)*8;pl2.position.x=Math.cos(t2*.38)*10;
+  ren.render(scene,cam);
+})();
+addEventListener('resize',()=>{rsz();cam.aspect=cv.width/cv.height;cam.updateProjectionMatrix();ren.setSize(cv.width,cv.height)});
+})();
+
+/* ──────────── NAV SOLID ──────────── */
+addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('solid',scrollY>50));
+
+/* ──────────── COUNTERS ──────────── */
+document.querySelectorAll('.cnt').forEach(el=>{new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting&&!e.target.dataset.done){e.target.dataset.done=1;const end=+e.target.dataset.n,step=end/90;let c=0;const t=setInterval(()=>{c+=step;if(c>=end){c=end;clearInterval(t)}e.target.textContent=Math.floor(c)},16)}})},{threshold:.6}).observe(el)});
+
+/* ──────────── REVEAL ──────────── */
+const rO=new IntersectionObserver(e=>{e.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('vis'),i*55)})},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.rv,.rl').forEach(el=>rO.observe(el));
+
+/* ──────────── TIMELINE ──────────── */
+const tO=new IntersectionObserver(e=>{e.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('vis'),i*130)})},{threshold:.2});
+document.querySelectorAll('.tli').forEach(el=>tO.observe(el));
+
+/* ──────────── SKILL BARS ──────────── */
+const sO=new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('.sk-f').forEach(b=>b.style.width=b.dataset.w+'%');sO.unobserve(e.target)}})},{threshold:.25});
+document.querySelectorAll('.sg').forEach(g=>sO.observe(g));
+
+/* ──────────── PROJECT EXPAND ──────────── */
+function toggleP(c){const ex=c.querySelector('.pex'),h=c.querySelector('.ehint'),o=ex.classList.contains('on');document.querySelectorAll('.pex.on').forEach(e=>{e.classList.remove('on');e.closest('.pc').querySelector('.ehint').textContent='↓ expand details'});if(!o){ex.classList.add('on');h.textContent='↑ collapse'}}
+
+/* ──────────── TAB SWITCH ──────────── */
+function switchTab(id,btn){document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));document.querySelectorAll('.pw').forEach(w=>w.classList.remove('on'));btn.classList.add('on');document.getElementById('tab-'+id).classList.add('on')}
+</script>
+</body>
+</html>
